@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint",
     "el:serve": "vue-cli-service electron:serve",
     "electron:build": "vue-cli-service electron:build",
+    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Library Book App\"",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
@@ -17,7 +18,8 @@
     "cors": "^2.8.5",
     "express-fileupload": "^1.4.0",
     "vue": "^3.2.13",
-    "vue-router": "^4.1.5"
+    "vue-router": "^4.1.5",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -28,6 +30,7 @@
     "@vue/cli-service": "~5.0.0",
     "electron": "^13.0.0",
     "electron-devtools-installer": "^3.1.0",
+    "electron-package": "^0.1.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
     "vue-cli-plugin-electron-builder": "~2.1.1"
