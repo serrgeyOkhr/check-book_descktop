@@ -3,6 +3,7 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+const serverApp = require('./server/server')
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Scheme must be registered before the app is ready
@@ -63,6 +64,9 @@ app.on('ready', async () => {
     }
   }
   createWindow()
+  serverApp.listen(2044, () => {
+    console.log('Server listening on http://localhost:2044 ...');
+  });
 })
 
 // Exit cleanly on request from parent process in development mode.
