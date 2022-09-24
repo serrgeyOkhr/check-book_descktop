@@ -34,20 +34,6 @@ async function createWindow() {
     win.loadURL("app://./index.html");
   }
 }
-// async function createHiddenWindow() {
-//   // Create the browser window.
-//   const win = new BrowserWindow({ show: false });
-
-//   if (process.env.WEBPACK_DEV_SERVER_URL) {
-//     // Load the url of the dev server if in development mode
-//     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-//     if (!process.env.IS_TEST) win.webContents.openDevTools();
-//   } else {
-//     createProtocol("app");
-//     // Load the index.html when not in development
-//     win.loadURL("./server.html");
-//   }
-// }
 
 // Quit when all windows are closed.
 app.on("window-all-closed", () => {
@@ -59,14 +45,9 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
   serverApp.listen(2044, () => {
     console.log("Server listening on http://localhost:2044 ...");

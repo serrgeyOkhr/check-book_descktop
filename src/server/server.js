@@ -29,7 +29,7 @@ expressApp.post("/api/upload", (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
     return res.status(400).send({err:"No files were uploaded."});
   }
-  console.log(req.files);
+  //console.log(req.files);
   if (req.files.book_data.mimetype !== 'text/xml') {
     return res.status(400).send({err: "Файл не правильного формата!"});
   }
