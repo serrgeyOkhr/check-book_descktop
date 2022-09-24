@@ -4,30 +4,28 @@ const fs = require("fs");
 const path = require("path");
 const parser = new xml2js.Parser({ attrkey: "ATTR" });
 // const PATH_TO_DATA = '/home/sergey/Projects/heart_of_library/data/input.XML'
-const PATH_TO_DATA = path.join('input', 'input.xml');
+const PATH_TO_DATA = path.join("input", "input.xml");
 // const PATH_TO_SAVE = "./output";
 // console.log(path.relative('/home/sergey/Projects/heart_of_library/index.js', '/home/sergey/Projects/heart_of_library/data/input.xml'));
 const BOOK_INTERFACE = () => ({
-  id: "", // control tag="001" subString. Last 9 symbols;
-  author: "", // field tag="700" -> subfield code="g" + subfield code="a"
-  title: "", // field tag="200" -> subfield code="a" || field tag="461" -> subfield code="a"
-  pageCounts: "", // field tag="215" -> subfield code="a"
-  tags: [], // field tag="606" -> subfield code="a" + code="x"
-  // genre: '', // field tag="225" -> subfield code="a"
-  lang: "", // field tag="101" -> subfield code="a"
-  issueYear: "", // field tag="210" -> subfield code="d"
-  translator: [], // field tag="702" -> subfield code="a" + subfield code="b"
-  ageLimit: [], // field tag="333" -> subfield code="a"
-  ISBN: "", //  field 10 -> tag a
+  id: { data: "", field: "tag='001'" }, // control tag="001" subString. Last 9 symbols;
+  author: { data: "", field: `tag="700" -> subfield code="g" + subfield code="a"` }, // field tag="700" -> subfield code="g" + subfield code="a"
+  title: { data: "", field: `tag="200" -> subfield code="a"` }, // field tag="200" -> subfield code="a"
+  pageCounts: { data: "", field: `tag="215" -> subfield code="a"` }, // field tag="215" -> subfield code="a"
+  tags: {data: [], field: ` tag="606" -> subfield code="a" + code="x"`}, // field tag="606" -> subfield code="a" + code="x"
+  isStoryCollection: { data: "No", field: `tag="461" -> subfield code="v"` }, // field tag="461" -> subfield code="v"
+  lang: { data: "", field: `tag="101" -> subfield code="a"` }, // field tag="101" -> subfield code="a"
+  issueYear: { data: "", field: `tag="210" -> subfield code="d"` }, // field tag="210" -> subfield code="d"
+  translator: {data: [], field: `tag="702" -> subfield code="a" + subfield code="b"`}, // field tag="702" -> subfield code="a" + subfield code="b"
+  ageLimit: {data: [], field: `tag="333" -> subfield code="a"`}, // field tag="333" -> subfield code="a"
+  ISBN: { data: "", field: `tag="10" -> subfield code="a"` }, //  field 10 -> tag a
 });
 
-
 function main() {
-
-  let xml_file = openFile(PATH_TO_DATA)
+  let xml_file = openFile(PATH_TO_DATA);
 
   // console.log(xml_file);
-  
+
   const book_shelf = [];
   parser.parseString(xml_file, (error, result) => {
     if (error === null) {
@@ -35,7 +33,7 @@ function main() {
       result.collection.record.forEach((element) => {
         const book = BOOK_INTERFACE();
         // console.log('element start' + element);
-        book.id = getBookID(element.control);
+        book.id.data = getBookID(element.control);
         // console.log(getBookID(element.control));
         dataParser(element.field, book);
         book_shelf.push(book);
@@ -43,10 +41,10 @@ function main() {
       // console.log(book_shelf);
     } else {
       console.log(error);
-      return "Ошибка парса данных"
+      return "Ошибка парса данных";
     }
   });
-  return book_shelf
+  return book_shelf;
 }
 
 function openFile(path) {
@@ -57,7 +55,7 @@ function openFile(path) {
   } catch (error) {
     console.log(error);
   }
-  return tmp_storage
+  return tmp_storage;
 }
 
 function getBookID(controls) {
@@ -66,7 +64,7 @@ function getBookID(controls) {
   controls.forEach((control) => {
     if (control.ATTR.tag === "001") {
       let str = control._.trim();
-      let idIndex = str.lastIndexOf("-") - 2;
+      let idIndex = str.lastIndexOf("-") + 1;
       // console.log(control._.trim().substring(idIndex));
       bookID = control._.trim().substring(idIndex);
     }
@@ -78,31 +76,34 @@ function dataParser(data, output) {
   data.forEach((field) => {
     // console.log(field);
     if (field.ATTR.tag === "10") {
-      output.ISBN = getBookISBN(field.subfield);
+      output.ISBN.data = getBookISBN(field.subfield);
     }
     if (field.ATTR.tag === "101") {
-      output.lang = getBookLang(field.subfield);
+      output.lang.data = getBookLang(field.subfield);
     }
     if (field.ATTR.tag === "200") {
-      output.title = getBookTitle(field.subfield);
+      output.title.data = getBookTitle(field.subfield);
     }
     if (field.ATTR.tag === "210") {
-      output.issueYear = getBookIssueYear(field.subfield);
+      output.issueYear.data = getBookIssueYear(field.subfield);
     }
     if (field.ATTR.tag === "215") {
-      output.pageCounts = getBookPageCounts(field.subfield);
+      output.pageCounts.data = getBookPageCounts(field.subfield);
+    }
+    if (field.ATTR.tag === "461") {
+      output.isStoryCollection.data = getIsStoryCollection(field.subfield);
     }
     if (field.ATTR.tag === "700") {
-      output.author = getBookAuthor(field.subfield);
+      output.author.data = getBookAuthor(field.subfield);
     }
     if (field.ATTR.tag === "702") {
-      output.translator.push(getBookTranslator(field.subfield));
+      output.translator.data.push(getBookTranslator(field.subfield));
     }
     if (field.ATTR.tag === "333") {
-      output.ageLimit.push(getBookAgeLimit(field.subfield));
+      output.ageLimit.data.push(getBookAgeLimit(field.subfield));
     }
     if (field.ATTR.tag === "606") {
-      output.tags = getBookTags(field.subfield);
+      output.tags.data = getBookTags(field.subfield);
     }
   });
 }
@@ -143,6 +144,17 @@ function getBookLang(subfields) {
   // console.log(outputStr);
   return outputStr;
 }
+function getIsStoryCollection(subfields) {
+  let outputStr = "";
+  let rawData = [];
+  subfields.forEach((sub) => {
+    if (sub.ATTR.code === "v") {
+      rawData.push(sub._.trim());
+    }
+  });
+  outputStr = rawData.join(" ");
+  return outputStr;
+}
 function getBookPageCounts(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -178,19 +190,18 @@ function getBookISBN(subfields) {
 }
 function getBookTags(subfields) {
   let rawData = [];
-  let numb = '0123456789'
+  let numb = "0123456789";
   if (subfields.length > 0) {
-  
-  subfields.forEach((sub) => {
-    if (numb.indexOf(sub.ATTR.code) === -1) {
-      rawData.push(sub._.trim());
-    }
-  });
-}
+    subfields.forEach((sub) => {
+      if (numb.indexOf(sub.ATTR.code) === -1) {
+        rawData.push(sub._.trim());
+      }
+    });
+  }
   return rawData;
 }
 function getBookTranslator(subfields) {
-  let outputStr = ''
+  let outputStr = "";
   let rawData = [];
   if (subfields.length > 0) {
     subfields.forEach((sub) => {
@@ -204,7 +215,7 @@ function getBookTranslator(subfields) {
   return outputStr;
 }
 function getBookAgeLimit(subfields) {
-  let outputStr = ''
+  let outputStr = "";
   let rawData = [];
   if (subfields.length > 0) {
     subfields.forEach((sub) => {
@@ -221,15 +232,13 @@ function getBookAgeLimit(subfields) {
 // testData(book_shelf)
 // writeData(book_shelf)
 
-
-
 module.exports = function parse_data() {
   const data = main();
   // console.log('hello from parser', data);
   if (data.length > 0) {
-    return data
+    return data;
   }
-}
+};
 
 // getBookWitout('pageCounts', book_shelf)
 // // open database
