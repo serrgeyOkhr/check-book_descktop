@@ -1,5 +1,9 @@
 <template>
-  <div class="page_header">
+  <div class="preloader" v-if="pagePreloader">
+    <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+  </div>
+  <div class="content" v-else>
+    <div class="page_header">
     <button @click="goBack">Загрузить другой файл</button>
     <div class="page_header_wrapper">
       <h2 class="page_title">Book page</h2>
@@ -106,6 +110,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script>
@@ -127,9 +132,11 @@ export default {
     const filterParams = ref([]);
     const copyMessage = ref(false)
     const healperPopup = ref(false)
+    const pagePreloader = ref(false);
     getData(book_data, book_URL);
     // console.log(visibleData);
     async function getData(book_data, book_URL) {
+      pagePreloader.value = true
       await getServerData(book_data, book_URL);
       await prepareData(book_data);
       await getFilterdData(visibleData, book_data, filterParams);
@@ -175,6 +182,7 @@ export default {
 
     async function setDefaultSort(data) {
       data.value = data.value.sort((a, b) => a.id.data - b.id.data);
+      pagePreloader.value = false
     }
     function setParamSort(data, param) {
       if (param === "title") {
@@ -256,17 +264,18 @@ export default {
     return {
       book_data,
       visibleData,
+      pagePreloader,
+      copyMessage,
+      healperPopup,
+      fieldInterface,
       handleGetBookData,
       setFilter,
       goBack,
       toggleDoneBook,
       handleSortData,
       copyToClipboard,
-      copyMessage,
       showHealper,
-      healperPopup,
       closePopup,
-      fieldInterface
     };
   },
 };
@@ -321,6 +330,7 @@ export default {
 .page_header {
   display: flex;
   margin-bottom: 15px;
+  padding: 0 10px;
   width: 100%;
   justify-content: space-between;
   align-items: center;
@@ -446,5 +456,100 @@ p{
   width: 15px;
   height: 15px;
   cursor: pointer;
+  margin-right: 15px;
 }
+/* PRELOADER STYLES */
+.preloader {
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 40px 40px;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #000;
+  margin: -4px 0 0 -4px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 63px;
+  left: 63px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 68px;
+  left: 56px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 71px;
+  left: 48px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 72px;
+  left: 40px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 71px;
+  left: 32px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 68px;
+  left: 24px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 63px;
+  left: 17px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 56px;
+  left: 12px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* END PRELOADER STYLES */
 </style>
