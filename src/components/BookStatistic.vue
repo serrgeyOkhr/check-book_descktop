@@ -83,8 +83,8 @@ export default {
         for (const field in book) {
           if (Object.hasOwnProperty.call(book, field)) {
             const el = book[field].data;
-
-            if (el.length === 0) {
+            // console.log(el);
+            if (el?.length === 0) {
               missData[field].count += 1;
               missData[field].book_id.push(book.id.data);
             }
