@@ -1,21 +1,26 @@
 {
-  "name": "check-book_descktop",
-  "version": "0.1.0",
+  "name": "checkBook",
+  "version": "0.2.0",
+  "author": "Ohryamkin Sergey",
+  "description": "Application for testing book data!",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "el:serve": "vue-cli-service electron:serve",
+    "electron:serve": "vue-cli-service electron:serve",
     "electron:build": "vue-cli-service electron:build",
-    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Library Book App\"",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.8.3",
     "cors": "^2.8.5",
+    "electron-squirrel-startup": "^1.0.0",
     "express-fileupload": "^1.4.0",
     "vue": "^3.2.13",
     "vue-router": "^4.1.5",
@@ -24,6 +29,11 @@
   "devDependencies": {
     "@babel/core": "^7.12.16",
     "@babel/eslint-parser": "^7.12.16",
+    "@electron-forge/cli": "^6.0.0-beta.66",
+    "@electron-forge/maker-deb": "^6.0.0-beta.66",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.66",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.66",
+    "@electron-forge/maker-zip": "^6.0.0-beta.66",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
@@ -54,5 +64,15 @@
     "last 2 versions",
     "not dead",
     "not ie 11"
-  ]
+  ],
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-zip"
+        }
+      ]
+    }
+  }
 }

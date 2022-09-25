@@ -3,6 +3,7 @@ node_modules
 /dist
 input
 output
+out
 
 # local env files
 .env.local
