@@ -1,32 +1,45 @@
 <template>
-<div class="book_stats">
-  <h4>Статистика по данным</h4>
-  <!-- <div>{{ fieldInterface }}</div> -->
-  <!-- <div>{{ bookStatistic }}</div> -->
-  <div class="stats_wrapper">
-    <div class="stat_el-body" v-for="(el, index) in bookStatistic" :key="index">
-      <div class="stat_el" v-if="el.count > 0">
-        <!-- {{index}}: {{el}} -->
+  <div class="book_stats">
+    <h4>Статистика по данным</h4>
+    <!-- <div>{{ fieldInterface }}</div> -->
+    <!-- <div>{{ bookStatistic }}</div> -->
+    <div class="stats_wrapper" v-if="!dataIsPerfect">
+      <div
+        class="stat_el-body"
+        v-for="(el, index) in bookStatistic"
+        :key="index">
+        <div
+          class="stat_el"
+          @click="handleParamSelect(index)"
+          v-if="el.count > 0"
+          :class="{ stat_selected: showBooksParams.indexOf(index) !== -1 }">
+          <!-- {{index}}: {{el}} -->
 
-        <span
-        class="stat_description" @click="handleParamSelect(index)"
-          >Книг без указания <span>{{ index }}</span
-          >:
-        </span>
-        <span class="stat_counter"> {{ el.count }} </span>
+          <span class="stat_description"
+            >Книг без указания <span>{{ index }}</span
+            >:
+          </span>
+          <span class="stat_counter"> {{ el.count }} </span>
+        </div>
       </div>
     </div>
+    <div v-else>
+      <h2>Все записи в полном порядке!</h2>
+    </div>
+    <div class="resetParams" v-if="showBooksParams.length > 0">
+      <span>Показаны записи в которых отсутствуют поля: </span>
+      <ul class="tagList">
+        <li
+          v-for="(param, index) in showBooksParams"
+          :key="index"
+          class="tag tag-close"
+          @click="removeParam(param)">
+          {{ param }}
+        </li>
+        <button class="tag" @click="resetShowParam">Убрать все</button>
+      </ul>
+    </div>
   </div>
-  <div class="resetParams" v-if="showBooksParams.length > 0">
-    <span>Показаны записи в которых отсутствуют поля: </span>
-    <ul class="tagList">
-      <li v-for="(param, index) in showBooksParams" :key="index" class="tag tag-close" @click="removeParam(param)">
-        {{ param }}
-      </li>
-      <button class="tag" @click="resetShowParam">Убрать все</button>
-    </ul>
-  </div>
-</div>
 </template>
 
 <!-- eslint-disable no-unused-vars -->
@@ -45,6 +58,7 @@ export default {
     const fieldInterface = ref({});
     const bookStatistic = ref({});
     const showBooksParams = ref([]);
+    const dataIsPerfect = ref(true);
     getFieldInterface(fieldInterface, book_data);
     getBookStatistic(bookStatistic, book_data);
 
@@ -87,6 +101,7 @@ export default {
             if (el?.length === 0) {
               missData[field].count += 1;
               missData[field].book_id.push(book.id.data);
+              dataIsPerfect.value = false;
             }
           }
         }
@@ -126,6 +141,7 @@ export default {
       bookStatistic,
       handleParamSelect,
       showBooksParams,
+      dataIsPerfect,
       resetShowParam,
       removeParam,
     };
@@ -134,9 +150,9 @@ export default {
 </script>
 
 <style>
-  .book_stats {
-    margin-bottom: 15px;
-  }
+.book_stats {
+  margin-bottom: 15px;
+}
 .stats_wrapper {
   display: flex;
   flex-wrap: wrap;
@@ -149,13 +165,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: lightblue;
+  background-color: #add8e6;
   margin: 10px;
   border: 1px solid;
   overflow: hidden;
   padding-right: 50px;
   border-radius: 10px;
   cursor: pointer;
+}
+.stat_selected {
+  background-color: rgb(88, 198, 235);
 }
 .stat_description {
   display: block;
@@ -177,7 +196,7 @@ export default {
   text-decoration: none;
   padding: 0;
   margin: 10px 0;
-  list-style-type: none
+  list-style-type: none;
 }
 .tag {
   text-decoration: none;
@@ -207,7 +226,7 @@ export default {
   height: 10px;
   background-color: #000;
   color: #fff;
-  content: 'х';
+  content: "х";
   cursor: pointer;
 }
 </style>
