@@ -19,11 +19,16 @@ body {
   text-align: center;
   color: #2c3e50;
 }
-
+img {
+  max-width: 100%;
+}
 nav {
   padding: 30px;
 }
-
+p {
+  margin: 0;
+  padding: 10px;
+}
 nav a {
   font-weight: bold;
   color: #2c3e50;
@@ -31,5 +36,11 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+.text-fz-18 {
+  font-size: 18px;
+}
+.pointer {
+  cursor: pointer;
 }
 </style>

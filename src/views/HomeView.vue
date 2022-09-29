@@ -1,8 +1,35 @@
 <template>
   <div class="home">
-    <h1>Библиотечное приложение!!</h1>
+    <h1>Система проверки данных</h1>
     <div class="container">
-      <div class="rightExportOptions"></div>
+      <div class="rightExportOptions">
+        <div class="toggleHealperBox">
+          <h3 class="pointer" @click="toggleHealper = !toggleHealper">
+            Как подготовить данные для загрузки в приложение?
+          </h3>
+          <div class="arrow_box">
+            <img
+              class="arrow"
+              :class="{arrow_up: toggleHealper}"
+              src="../../public/downward-arrow.png"
+              alt="" />
+          </div>
+        </div>
+        <div v-if="toggleHealper">
+          <div>
+            <h5>Пункт 1</h5>
+            <p>Делаем то-то. Потом то-то.</p>
+          </div>
+          <div>
+            <h5>Пункт 2</h5>
+            <p>Выбираем такие вот параметры. Ставим вот эти галочки</p>
+          </div>
+          <div>
+            <h5>Пункт 3</h5>
+            <p>Жмем сюда. Потом сюда</p>
+          </div>
+        </div>
+      </div>
       <div class="importData">
         <form
           action="#"
@@ -11,7 +38,7 @@
           class="form">
           <div class="formBody">
             <div class="fileSelector">
-              <label for="inputFile" class="selectFile_button"
+              <label for="inputFile" class="selectFile_button pointer"
                 >Выбрать файл</label
               >
               <div class="filePreloader" v-if="file">
@@ -60,13 +87,14 @@
 
 <script>
 import { ref } from "@vue/reactivity";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 export default {
   setup() {
     const serverURL = "http://localhost:2044/api/upload";
     const file = ref(undefined);
     const serverErr = ref(undefined);
-    const router = useRouter()
+    const router = useRouter();
+    const toggleHealper = ref(false);
     function handleUploadFile(event) {
       serverErr.value = undefined;
       file.value = event.target.files[0];
@@ -86,16 +114,17 @@ export default {
         .then((response) => response.json())
         .then((result) => {
           if (result.err !== undefined) serverErr.value = result;
-          openBookPage()
+          openBookPage();
         })
         .catch((err) => (serverErr.value = err));
     }
-    function openBookPage () {
-      router.push("/books")
+    function openBookPage() {
+      router.push("/books");
     }
     return {
       file,
       serverErr,
+      toggleHealper,
       handleUploadFile,
       handleUploadFileOnServer,
     };
@@ -103,6 +132,26 @@ export default {
 };
 </script>
 <style>
+  .toggleHealperBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .arrow_box {
+    width: 30px;
+  }
+  .arrow_up {
+    transform: rotate(180deg);
+  }
+  .rightExportOptions {
+    border: 1px solid;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    /* transition: height 2s; */
+  }
+.container {
+  margin: 0 50px;
+}
 .form {
   width: 100%;
 }
@@ -116,7 +165,7 @@ export default {
 .importData {
   display: flex;
   border: 1px solid;
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 10px;
   min-height: 15vh;
 }
@@ -126,7 +175,12 @@ export default {
 .fileSelector {
   align-items: center;
   display: flex;
+  justify-content: center;
   margin-bottom: 15px;
+  min-height: 200px;
+  width: 100%;
+  border: 1px solid;
+  border-radius: 10px;
 }
 .filePreloader {
   margin-left: 20px;
@@ -148,7 +202,12 @@ export default {
 .selectFile_button {
   display: block;
   padding: 5px 10px;
-  background-color: #ccc;
+  background-color: #fff;
+  border: 1px solid;
+  margin-left: 20px;
+}
+.selectFile_button:hover {
+  background-color: rgb(243, 243, 243);
 }
 .actionButton {
   width: 100%;
