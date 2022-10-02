@@ -10,7 +10,7 @@
           <div class="arrow_box">
             <img
               class="arrow"
-              :class="{arrow_up: toggleHealper}"
+              :class="{ arrow_up: toggleHealper }"
               src="../../public/downward-arrow.png"
               alt="" />
           </div>
@@ -75,7 +75,15 @@
                 type="submit"
                 @click.prevent="handleUploadFileOnServer"
                 :disabled="!file">
-                upload
+                <div class="btn-loader" v-if="buttonLoader">
+                  <div class="lds-ring">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+                <span v-else>Продолжить</span>
               </button>
             </div>
           </div>
@@ -95,6 +103,8 @@ export default {
     const serverErr = ref(undefined);
     const router = useRouter();
     const toggleHealper = ref(false);
+    const buttonLoader = ref(false);
+
     function handleUploadFile(event) {
       serverErr.value = undefined;
       file.value = event.target.files[0];
@@ -108,6 +118,7 @@ export default {
       sendFileOnServer(file);
     }
     function sendFileOnServer(file) {
+      buttonLoader.value = true;
       let formData = new FormData();
       formData.append("book_data", file.value);
       fetch(serverURL, { method: "POST", mode: "cors", body: formData })
@@ -116,7 +127,8 @@ export default {
           if (result.err !== undefined) serverErr.value = result;
           openBookPage();
         })
-        .catch((err) => (serverErr.value = err));
+        .catch((err) => (serverErr.value = err))
+        .finally(() => (buttonLoader.value = false));
     }
     function openBookPage() {
       router.push("/books");
@@ -125,6 +137,7 @@ export default {
       file,
       serverErr,
       toggleHealper,
+      buttonLoader,
       handleUploadFile,
       handleUploadFileOnServer,
     };
@@ -132,23 +145,23 @@ export default {
 };
 </script>
 <style>
-  .toggleHealperBox {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .arrow_box {
-    width: 30px;
-  }
-  .arrow_up {
-    transform: rotate(180deg);
-  }
-  .rightExportOptions {
-    border: 1px solid;
-    border-radius: 20px;
-    margin-bottom: 15px;
-    /* transition: height 2s; */
-  }
+.toggleHealperBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.arrow_box {
+  width: 30px;
+}
+.arrow_up {
+  transform: rotate(180deg);
+}
+.rightExportOptions {
+  border: 1px solid;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  /* transition: height 2s; */
+}
 .container {
   margin: 0 50px;
 }
