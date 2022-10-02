@@ -3,6 +3,8 @@
 import { app, protocol, BrowserWindow } from "electron";
 import { createProtocol } from "vue-cli-plugin-electron-builder/lib";
 import installExtension, { VUEJS3_DEVTOOLS } from "electron-devtools-installer";
+const fs = require("fs");
+const path = require("path");
 const serverApp = require("./server/server");
 const isDevelopment = process.env.NODE_ENV !== "production";
 
@@ -40,6 +42,7 @@ app.on("window-all-closed", () => {
   // On macOS it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== "darwin") {
+    deleteInputFolder()
     app.quit();
   }
 });
@@ -52,6 +55,8 @@ app.on("ready", async () => {
   serverApp.listen(2044, () => {
     console.log("Server listening on http://localhost:2044 ...");
   });
+  
+  createInputFolder();
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
@@ -69,12 +74,23 @@ if (isDevelopment) {
   if (process.platform === "win32") {
     process.on("message", (data) => {
       if (data === "graceful-exit") {
+        deleteInputFolder()
         app.quit();
       }
     });
   } else {
     process.on("SIGTERM", () => {
+      deleteInputFolder()
       app.quit();
     });
   }
+}
+
+function createInputFolder() {
+  let uploadPath = path.join("input");
+  !fs.existsSync(uploadPath) && fs.mkdirSync(uploadPath, { recursive: true });
+}
+function deleteInputFolder() {
+  let uploadPath = path.join("input");
+  fs.rmSync(uploadPath, { recursive: true, force: true });
 }
