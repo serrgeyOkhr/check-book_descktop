@@ -11,6 +11,12 @@
       <div></div>
     </div>
   </div>
+  <div v-else-if="errMessages !== ''">
+    <div class="page_header-block page_header-leftBlock">
+      <button class="pointer" @click="goBack">Загрузить другой файл</button>
+    </div>
+    <pre>{{ errMessages.error }}</pre>
+  </div>
   <div class="content" v-else>
     <div class="page_header">
       <div class="page_header-block page_header-leftBlock">
@@ -153,24 +159,34 @@ export default {
     BookStatistic,
   },
   setup() {
-    const book_URL = "http://localhost:2044/api/getBooks";
+    const book_URL = "getBooks";
     const router = useRouter();
     const book_data = ref([]);
     const visibleData = ref([]);
     const fieldInterface = ref({});
     const filterParams = ref([]);
+    const errMessages = ref("");
     const copyMessage = ref(false);
     const healperPopup = ref(false);
     const pagePreloader = ref(false);
     getData(book_data, book_URL);
-    // console.log(visibleData);
+
     async function getData(book_data, book_URL) {
       pagePreloader.value = true;
+
       await getServerData(book_data, book_URL);
+
+      if (book_data.value.error) {
+        errMessages.value = book_data.value;
+        pagePreloader.value = false;
+        return false
+      }
+
       await prepareData(book_data);
       await getFilterdData(visibleData, book_data, filterParams);
-      await setDefaultSort(visibleData);
+      defaultSort(visibleData);
       getFieldInterface(fieldInterface, book_data);
+      pagePreloader.value = false;
     }
 
     function getFieldInterface(output, data) {
@@ -209,10 +225,7 @@ export default {
       });
     }
 
-    async function setDefaultSort(data) {
-      data.value = data.value.sort((a, b) => a.id.data - b.id.data);
-      pagePreloader.value = false;
-    }
+
     function setParamSort(data, param) {
       if (param === "title") {
         sortByLength(data, param);
@@ -246,7 +259,7 @@ export default {
         return 0;
       });
     }
-    function defaultSort(data, param) {
+    function defaultSort(data, param = "id") {
       data.value = data.value.sort((a, b) => {
         if (a[param].data < b[param].data) {
           return -1;
@@ -257,9 +270,9 @@ export default {
         return 0;
       });
     }
+
     function handleSortData(e) {
       setParamSort(visibleData, e.target.textContent);
-      // console.log(e.target.textContent);
     }
     function toggleDoneBook(data, index) {
       data[index].isDone = !data[index].isDone;
@@ -269,7 +282,6 @@ export default {
       navigator.clipboard.writeText(data).then(
         function () {
           showMessage();
-          // console.log("Async: Copying to clipboard was successful!");
         },
         function (err) {
           console.error("Async: Could not copy text: ", err);
@@ -296,6 +308,7 @@ export default {
       copyMessage,
       healperPopup,
       fieldInterface,
+      errMessages,
       handleGetBookData,
       setFilter,
       goBack,
@@ -474,11 +487,6 @@ export default {
 }
 /* END TABLE STYLES */
 
-
-
-
-
-
 .hidden {
   opacity: 0;
 }
@@ -496,100 +504,4 @@ export default {
   padding: 10px 15px;
   transition: 0.15s;
 }
-
-
-/* PRELOADER STYLES */
-.preloader {
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.2);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.lds-roller {
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-roller div {
-  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  transform-origin: 40px 40px;
-}
-.lds-roller div:after {
-  content: " ";
-  display: block;
-  position: absolute;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #000;
-  margin: -4px 0 0 -4px;
-}
-.lds-roller div:nth-child(1) {
-  animation-delay: -0.036s;
-}
-.lds-roller div:nth-child(1):after {
-  top: 63px;
-  left: 63px;
-}
-.lds-roller div:nth-child(2) {
-  animation-delay: -0.072s;
-}
-.lds-roller div:nth-child(2):after {
-  top: 68px;
-  left: 56px;
-}
-.lds-roller div:nth-child(3) {
-  animation-delay: -0.108s;
-}
-.lds-roller div:nth-child(3):after {
-  top: 71px;
-  left: 48px;
-}
-.lds-roller div:nth-child(4) {
-  animation-delay: -0.144s;
-}
-.lds-roller div:nth-child(4):after {
-  top: 72px;
-  left: 40px;
-}
-.lds-roller div:nth-child(5) {
-  animation-delay: -0.18s;
-}
-.lds-roller div:nth-child(5):after {
-  top: 71px;
-  left: 32px;
-}
-.lds-roller div:nth-child(6) {
-  animation-delay: -0.216s;
-}
-.lds-roller div:nth-child(6):after {
-  top: 68px;
-  left: 24px;
-}
-.lds-roller div:nth-child(7) {
-  animation-delay: -0.252s;
-}
-.lds-roller div:nth-child(7):after {
-  top: 63px;
-  left: 17px;
-}
-.lds-roller div:nth-child(8) {
-  animation-delay: -0.288s;
-}
-.lds-roller div:nth-child(8):after {
-  top: 56px;
-  left: 12px;
-}
-@keyframes lds-roller {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-/* END PRELOADER STYLES */
 </style>
