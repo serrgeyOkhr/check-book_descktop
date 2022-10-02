@@ -3,7 +3,6 @@ const xml2js = require("xml2js");
 const fs = require("fs");
 const path = require("path");
 const parser = new xml2js.Parser({ attrkey: "ATTR" });
-// const PATH_TO_DATA = '/home/sergey/Projects/heart_of_library/data/input.XML'
 const PATH_TO_DATA = path.join("input", "input.xml");
 // const PATH_TO_SAVE = "./output";
 // console.log(path.relative('/home/sergey/Projects/heart_of_library/index.js', '/home/sergey/Projects/heart_of_library/data/input.xml'));
@@ -23,32 +22,29 @@ const BOOK_INTERFACE = () => ({
 
 function main() {
   let xml_file = openFile(PATH_TO_DATA);
-
-  // console.log(xml_file);
+  let Err = undefined;
 
   const book_shelf = [];
+
   parser.parseString(xml_file, (error, result) => {
     if (error === null) {
-      // console.log(result);
       result.collection.record.forEach((element) => {
         const book = BOOK_INTERFACE();
-        // console.log('element start' + element);
-        book.id.data = getBookID(element.control);
-        // console.log(getBookID(element.control));
+        getBookID(element.control, book);
         dataParser(element.field, book);
         book_shelf.push(book);
       });
-      // console.log(book_shelf);
     } else {
-      console.log(error);
-      return "Ошибка парса данных";
+      Err = error;
     }
   });
+  if (Err) {
+    return {error: String(Err)};
+  }
   return book_shelf;
 }
 
 function openFile(path) {
-  // console.log(path);
   let tmp_storage;
   try {
     tmp_storage = fs.readFileSync(path, "utf8");
@@ -58,18 +54,17 @@ function openFile(path) {
   return tmp_storage;
 }
 
-function getBookID(controls) {
+function getBookID(controls, output) {
   // console.log(controls);
   let bookID = "";
   controls.forEach((control) => {
     if (control.ATTR.tag === "001") {
       let str = control._.trim();
       let idIndex = str.lastIndexOf("-") + 1;
-      // console.log(control._.trim().substring(idIndex));
       bookID = control._.trim().substring(idIndex);
     }
   });
-  return bookID;
+  output.id.data = bookID;
 }
 
 function dataParser(data, output) {
@@ -129,9 +124,9 @@ function getBookTitle(subfields) {
     }
   });
   outputStr = rawData.reverse().join("; ");
-  // console.log(outputStr);
   return outputStr;
 }
+
 function getBookLang(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -141,9 +136,9 @@ function getBookLang(subfields) {
     }
   });
   outputStr = rawData.join(" ");
-  // console.log(outputStr);
   return outputStr;
 }
+
 function getIsStoryCollection(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -155,6 +150,7 @@ function getIsStoryCollection(subfields) {
   outputStr = rawData.join(" ");
   return outputStr;
 }
+
 function getBookPageCounts(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -166,6 +162,7 @@ function getBookPageCounts(subfields) {
   outputStr = rawData.join(" ");
   return outputStr;
 }
+
 function getBookIssueYear(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -177,6 +174,7 @@ function getBookIssueYear(subfields) {
   outputStr = rawData.join(" ");
   return outputStr;
 }
+
 function getBookISBN(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -188,6 +186,7 @@ function getBookISBN(subfields) {
   outputStr = rawData.join(" ");
   return outputStr;
 }
+
 function getBookTags(subfields) {
   let rawData = [];
   let numb = "0123456789";
@@ -200,6 +199,7 @@ function getBookTags(subfields) {
   }
   return rawData;
 }
+
 function getBookTranslator(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -211,9 +211,9 @@ function getBookTranslator(subfields) {
     });
   }
   outputStr = rawData.join(" ");
-  // console.log(rawData);
   return outputStr;
 }
+
 function getBookAgeLimit(subfields) {
   let outputStr = "";
   let rawData = [];
@@ -225,21 +225,18 @@ function getBookAgeLimit(subfields) {
     });
   }
   outputStr = rawData.join(" ");
-  // console.log(rawData);
   return outputStr;
 }
 
-// testData(book_shelf)
-// writeData(book_shelf)
-
 module.exports = function parse_data() {
   const data = main();
-  // console.log('hello from parser', data);
-  if (data.length > 0) {
+  if (data !== '') {
     return data;
   }
 };
 
+// testData(book_shelf)
+// writeData(book_shelf)
 // getBookWitout('pageCounts', book_shelf)
 // // open database
 // let db = new sqlite3.Database('./book_shelf.db', (err) => {
