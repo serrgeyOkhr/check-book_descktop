@@ -55,9 +55,10 @@
           }"
           v-for="(book, index) in book_data[0]"
           :key="index"
-          @click="handleSortData">
+          @click="handleSortData(index)">
           <!-- @mouseover.once="showHealper" -->
-          <span>{{ index }}</span>
+          <!-- <span>{{ index }}</span> -->
+          <span>{{ book.rusName }}</span>
         </div>
       </div>
       <div class="table_body" v-if="visibleData.length > 0">
@@ -91,7 +92,7 @@
                 {{ fieldData.data }}
               </p>
             </div>
-            <div v-else-if="typeof fieldData.data !== 'string'">
+            <div v-else-if="(typeof fieldData.data) !== 'string'">
               <span
                 v-for="(data, index) in fieldData.data"
                 :key="index"
@@ -127,7 +128,7 @@
               class="healperPopupField"
               v-for="(field, index) in fieldInterface"
               :key="index">
-              <span v-if="index !== 'isDone'">
+              <span v-if="index !== 'undefined'">
                 {{ index }}: <span class="text-fz-18"> {{ field }}</span>
               </span>
             </div>
@@ -194,7 +195,7 @@ export default {
 
       for (const field in book) {
         if (Object.hasOwnProperty.call(book, field)) {
-          output.value[field] = book[field].field;
+          output.value[book[field].rusName] = book[field].field;
         }
       }
     }
@@ -271,8 +272,8 @@ export default {
       });
     }
 
-    function handleSortData(e) {
-      setParamSort(visibleData, e.target.textContent);
+    function handleSortData(sortParam) {
+      setParamSort(visibleData, sortParam);
     }
     function toggleDoneBook(data, index) {
       data[index].isDone = !data[index].isDone;

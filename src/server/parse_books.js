@@ -7,17 +7,17 @@ const PATH_TO_DATA = path.join("input", "input.xml");
 // const PATH_TO_SAVE = "./output";
 // console.log(path.relative('/home/sergey/Projects/heart_of_library/index.js', '/home/sergey/Projects/heart_of_library/data/input.xml'));
 const BOOK_INTERFACE = () => ({
-  id: { data: "", field: "tag='001'" }, // control tag="001" subString. Last 9 symbols;
-  author: { data: "", field: `tag="700" -> subfield code="g" + subfield code="a"` }, // field tag="700" -> subfield code="g" + subfield code="a"
-  title: { data: "", field: `tag="200" -> subfield code="a"` }, // field tag="200" -> subfield code="a"
-  pageCounts: { data: "", field: `tag="215" -> subfield code="a"` }, // field tag="215" -> subfield code="a"
-  tags: {data: [], field: ` tag="606" -> subfield code="a" + code="x"`}, // field tag="606" -> subfield code="a" + code="x"
-  isStoryCollection: { data: "No", field: `tag="461" -> subfield code="v"` }, // field tag="461" -> subfield code="v"
-  lang: { data: "", field: `tag="101" -> subfield code="a"` }, // field tag="101" -> subfield code="a"
-  issueYear: { data: "", field: `tag="210" -> subfield code="d"` }, // field tag="210" -> subfield code="d"
-  translator: {data: [], field: `tag="702" -> subfield code="a" + subfield code="b"`}, // field tag="702" -> subfield code="a" + subfield code="b"
-  ageLimit: {data: [], field: `tag="333" -> subfield code="a"`}, // field tag="333" -> subfield code="a"
-  ISBN: { data: "", field: `tag="10" -> subfield code="a"` }, //  field 10 -> tag a
+  id: {rusName: 'ID', data: "", field: "tag='001'" }, // control tag="001" subString. Last 9 symbols;
+  author: {rusName: 'Автор', data: "", field: `tag="700" -> subfield code="g" + subfield code="a"` }, // field tag="700" -> subfield code="g" + subfield code="a"
+  title: {rusName: 'Название', data: "", field: `tag="200" -> subfield code="a"` }, // field tag="200" -> subfield code="a"
+  pageCounts: {rusName: 'Кол-во стр.', data: "", field: `tag="215" -> subfield code="a"` }, // field tag="215" -> subfield code="a"
+  tags: {rusName: 'Ключевые слова', data: [], field: ` tag="606" -> subfield code="a" + code="x"`}, // field tag="606" -> subfield code="a" + code="x"
+  isStoryCollection: {rusName: 'Сборник', data: "No", field: `tag="461" -> subfield code="v"` }, // field tag="461" -> subfield code="v"
+  lang: {rusName: 'Язык', data: "", field: `tag="101" -> subfield code="a"` }, // field tag="101" -> subfield code="a"
+  issueYear: {rusName: 'Год выпуска', data: "", field: `tag="210" -> subfield code="d"` }, // field tag="210" -> subfield code="d"
+  translator: { rusName: 'Переводчик', data: [], field: `tag="702" -> subfield code="a" + subfield code="b"`}, // field tag="702" -> subfield code="a" + subfield code="b"
+  ageLimit: {rusName: 'Возрастные ограничения', data: [], field: `tag="333" -> subfield code="a"`}, // field tag="333" -> subfield code="a"
+  ISBN: {rusName: 'ISBN', data: "", field: `tag="10" -> subfield code="a"` }, //  field 10 -> tag a
 });
 
 function main() {

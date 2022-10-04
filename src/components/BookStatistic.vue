@@ -16,7 +16,7 @@
           <!-- {{index}}: {{el}} -->
 
           <span class="stat_description"
-            >Книг без указания <span>{{ index }}</span
+            >Книг без указания <span>{{ el.name }}</span
             >:
           </span>
           <span class="stat_counter"> {{ el.count }} </span>
@@ -86,6 +86,12 @@ export default {
           },
           book_id: {
             value: [],
+            writable: true,
+            enumerable: true,
+            configurable: true,
+          },
+          name: {
+            value: data.value[0][field].rusName,
             writable: true,
             enumerable: true,
             configurable: true,
