@@ -1,6 +1,6 @@
 {
   "name": "checkBook",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Ohryamkin Sergey",
   "description": "Application for testing book data!",
   "private": true,
@@ -19,8 +19,12 @@
     "cors": "^2.8.5",
     "electron-squirrel-startup": "^1.0.0",
     "express-fileupload": "^1.4.0",
+    "iconv": "^3.0.1",
+    "node-expat": "^2.4.0",
+    "node-xml-stream": "^1.0.2",
     "vue": "^3.2.13",
     "vue-router": "^4.1.5",
+    "xml-stream": "^0.4.5",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
