@@ -15,7 +15,8 @@
     <div class="page_header-block page_header-leftBlock">
       <button class="pointer" @click="goBack">Загрузить другой файл</button>
     </div>
-    <pre>{{ errMessages.error }}</pre>
+    <ErrorMess :error="errMessages" />
+    <!-- <pre>{{ errMessages.error }}</pre> -->
   </div>
   <div class="content" v-else>
     <div class="page_header">
@@ -154,11 +155,13 @@ import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { getServerData } from "../composition/fetch-data";
 import BookStatistic from "@/components/BookStatistic.vue";
+import ErrorMess from "@/components/ErrorMess.vue";
 export default {
   name: "book-page",
   components: {
     BookStatistic,
-  },
+    ErrorMess
+},
   setup() {
     const book_URL = "getBooks";
     const router = useRouter();
