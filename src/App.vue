@@ -7,6 +7,9 @@
 </template>
 
 <style>
+html {
+  background-color: #fff;
+}
 body {
   box-sizing: border-box;
   margin: 0;

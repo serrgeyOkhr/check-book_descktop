@@ -378,6 +378,9 @@ export default {
 /* END POPUP STYLES */
 
 /* HEADER STYLES */
+.content {
+  padding-top: 5px;
+}
 .page_header {
   display: flex;
   margin-bottom: 15px;
