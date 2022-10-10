@@ -42,11 +42,11 @@
     <!-- <pre>{{book_data}}</pre> -->
     <div class="table_wrapper">
       <div class="table_header">
-        <div class="cell header_cell cell_extrasmall">
+        <div class="cell header_cell cell_extrasmall noselect">
           <span>№</span>
         </div>
         <div
-          class="cell header_cell"
+          class="cell header_cell noselect"
           :class="{
             cell_small:
               index === 'lang' ||
@@ -73,7 +73,7 @@
             notDone: !book['isDone'],
           }">
           <div
-            class="cell data_cell cell_extrasmall pointer"
+            class="cell data_cell cell_extrasmall pointer noselect"
             @click="toggleDoneBook(visibleData, index)">
             {{ index + 1 }}
           </div>

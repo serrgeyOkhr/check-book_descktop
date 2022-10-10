@@ -3,8 +3,8 @@
     <h1>Система проверки данных</h1>
     <div class="container">
       <div class="rightExportOptions">
-        <div class="toggleHealperBox">
-          <h3 class="pointer" @click="toggleHealper = !toggleHealper">
+        <div class="toggleHealperBox pointer noselect"  @click="toggleHealper = !toggleHealper">
+          <h3>
             Как подготовить данные для загрузки в приложение?
           </h3>
           <div class="arrow_box">
@@ -38,7 +38,7 @@
           class="form">
           <div class="formBody">
             <div class="fileSelector">
-              <label for="inputFile" class="selectFile_button pointer"
+              <label for="inputFile" class="selectFile_button pointer noselect"
                 >Выбрать файл</label
               >
               <div class="filePreloader" v-if="file">
@@ -83,7 +83,7 @@
                     <div></div>
                   </div>
                 </div>
-                <span v-else>Продолжить</span>
+                <span class="noselect" v-else>Продолжить</span>
               </button>
             </div>
           </div>
