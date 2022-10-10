@@ -2,21 +2,20 @@
   <div class="book_stats">
     <h4>Статистика по данным</h4>
     <!-- <div>{{ fieldInterface }}</div> -->
-    <!-- <div>{{ bookStatistic }}</div> -->
     <div class="stats_wrapper" v-if="!dataIsPerfect">
       <div
-        class="stat_el-body"
-        v-for="(el, index) in bookStatistic"
-        :key="index">
-        <div
-          class="stat_el"
-          @click="handleParamSelect(index)"
-          v-if="el.count > 0"
-          :class="{ stat_selected: showBooksParams.indexOf(index) !== -1 }">
-          <!-- {{index}}: {{el}} -->
-
-          <span class="stat_description"
-            >Книг без указания <span>{{ el.name }}</span
+      class="stat_el-body"
+      v-for="(el, index) in bookStatistic"
+      :key="index">
+      <div
+      class="stat_el"
+      @click="handleParamSelect(index)"
+      v-if="el.count > 0"
+      :class="{ stat_selected: showBooksParams.indexOf(index) !== -1 }">
+      <!-- {{index}}: {{el}} -->
+      
+      <span class="stat_description"
+      >Книг без указания <span>{{ el.name }}</span
             >:
           </span>
           <span class="stat_counter"> {{ el.count }} </span>
@@ -39,6 +38,7 @@
         <button class="tag" @click="resetShowParam">Убрать все</button>
       </ul>
     </div>
+    <div class="numberOfBooks">Общее число записей: {{ book_data.length }}</div>
   </div>
 </template>
 
@@ -234,5 +234,12 @@ export default {
   color: #fff;
   content: "х";
   cursor: pointer;
+}
+.numberOfBooks{
+  margin: 10px 0;
+  display: flex;
+  font-size: 20px;
+  padding: 0 10px;
+  justify-content: flex-end;
 }
 </style>
