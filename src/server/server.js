@@ -4,34 +4,57 @@ const fileUpload = require("express-fileupload");
 const path = require("path");
 const allBooks = require('./parse_books')
 const runStatistic = require("./bookStatistic");
+// const EventEmitter = require("events")
 
 const expressApp = express();
 expressApp.use(cors()).use(fileUpload());
 
-// expressApp.get("/api/getBooks", (req, res) => {
-//   const startTime = Date.now();
-//   let book_data = getBookData();
-//   if (book_data.error) return res.status(420).json(book_data)
-//   console.log('Время:', Date.now() - startTime);
-//   res.status(200).json(book_data);
-// });
-
 expressApp.get("/api/getBooks", (req, res) => {
   const startTime = Date.now();
-  // console.log(Date.now());
-  let book_data;
-  getBooksStats()
-    .then((response) => {
-      book_data = response;
-      return response;
-    })
-    .then(() => console.log('Время:', Date.now() - startTime))
-    .then(() => res.status(200).json(book_data))
-  // let statistic = getBooksStats();
-  // // if (book_data.error) return res.status(420).json(book_data)
-  // console.log(statistic);
-  // res.status(200).send({ status: "OK" });
+  let book_data = getBookData();
+  if (book_data.error) return res.status(420).json(book_data)
+  console.log('Время:', Date.now() - startTime);
+  res.status(200).json(book_data);
 });
+
+// expressApp.get("/api/getBooks", (req, res) => {
+//   res.set({
+//     "Access-Control-Allow-Origin": "*",
+//     "Cache-Control": "no-cache",
+//     "Connection": "keep-alive",
+//     "Content-Type": "text/event-stream",
+//   });
+//   res.flushHeaders();
+
+//   const startTime = Date.now();
+//   const myEE = new EventEmitter();
+
+//   // res.write("{")
+//   myEE.on('nextStep', ((data)=>{
+//     // let strData = JSON.stringify({'count': data})
+//     // console.log(JSON.parse(strData));
+//     sendData(data)
+    
+//     // res.write(",")
+//   }))
+//   function sendData(data) {
+//     setTimeout((()=>{
+//       res.status(200).write(JSON.stringify(data))
+//     }),0)
+//   }
+//   myEE.on('end_parse', ((data)=>{
+//     let strData = JSON.stringify({'result': data})
+//     // console.log(JSON.parse(strData));
+//     res.status(200).write(strData)
+//     // res.write(",")
+//   }))
+//   // console.log(Date.now());
+
+//   getBooksStats(myEE)
+//     // .then((response) => res.status(200).json(response))
+//     .then(() => console.log('Время:', Date.now() - startTime))
+//     .then(() => setTimeout((()=>{res.end()})), 0)
+// });
 
 
 // expressApp.get("/api/getStatistic", (req, res) => {
@@ -78,8 +101,9 @@ expressApp.post("/api/upload", (req, res) => {
 function getBookData() {
   return allBooks()
 }
-async function getBooksStats() {
-  const data = await runStatistic();
+// eslint-disable-next-line no-unused-vars
+async function getBooksStats(myEE) {
+  const data = runStatistic(myEE);
   return data;
 }
 

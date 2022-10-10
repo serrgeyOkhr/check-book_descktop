@@ -61,55 +61,61 @@ const TEXT_DATA = "$text";
 // const PATH_TO_SAVE = "./output";
 // console.log(path.relative('/home/sergey/Projects/heart_of_library/index.js', '/home/sergey/Projects/heart_of_library/data/input.xml'));
 
-async function main() {
+async function main(myEE) {
+  /**
+   * WHAT IS GONNA HAPPEND HERE?
+   *
+   * 1. Создание БД, если нет. Создание талицы внутри, если нет.
+   *
+   * 2. Проверяю, что файл существует, и с ним все ок. Если нет -> вернуть ошибку
+   *
+   * 3. Считываю данные из файла поочередно. Записываю в БД каждую считаную запись
+   *
+   * 4. Нахожу конец файла или ошибку данных (не закрытый последний тэг).
+   *
+   * 5. Возвращаю данные о проделанной работе (Кол-во записей. Наличие ошибок данных)
+   */
   let data;
-  await bookPromis()
-    .then((response) => {
-      data = response;
-      return response
-    });
+  await bookPromis(myEE).then((response) => {
+    data = response;
+    return response;
+  });
   return data;
 }
 
-const bookPromis = () =>
+const bookPromis = (myEE) => {
+  const emiter = myEE;
   // eslint-disable-next-line no-unused-vars
-  new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const book_shelf = [];
+    let count = 0;
     // let xml_file = openFile(PATH_TO_DATA);
-    /**
-     * WHAT IS GONNA HAPPEND HERE?
-     *
-     * 1. Создание БД, если нет. Создание талицы внутри, если нет.
-     *
-     * 2. Проверяю, что файл существует, и с ним все ок. Если нет -> вернуть ошибку
-     *
-     * 3. Считываю данные из файла поочередно. Записываю в БД каждую считаную запись
-     *
-     * 4. Нахожу конец файла или ошибку данных (не закрытый последний тэг).
-     *
-     * 5. Возвращаю данные о проделанной работе (Кол-во записей. Наличие ошибок данных)
-     */
+
     const stream = fs.createReadStream(PATH_TO_DATA);
     const xml = new XmlStream(stream);
     xml.collect("field");
     xml.collect("subfield");
     xml.collect("control");
-    
+
     xml.on("endElement: record", function (item) {
+      count++;
       const book = BOOK_INTERFACE();
       // console.log('ITEM', item);
       getBookID(item.control, book);
       dataParser(item.field, book);
       book_shelf.push(book);
+      emiter.emit('nextStep', count)
     });
 
     xml.on("end", function () {
       // console.log(book_shelf);
+      emiter.emit('end_parse', book_shelf)
       console.log("END XML");
       resolve(book_shelf);
       // return book_shelf;
     });
   });
+}
 
 function getBookID(controls, output) {
   // console.log(controls);
@@ -301,8 +307,8 @@ function getBookAgeLimit(subfields) {
 //   myFirstPromise.then((response) => data = response)
 //   return data;
 // };
-module.exports = async function parse_data() {
-  const data = await main();
+module.exports = async function parse_data(myEE) {
+  const data = main(myEE);
   if (data !== "") {
     return data;
   }
